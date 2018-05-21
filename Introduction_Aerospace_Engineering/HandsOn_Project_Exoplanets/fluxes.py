@@ -6,6 +6,7 @@ R_SUN = 695508          # Solar radius [km]
 M_SUN = 2e30            # Solar mass [kg]
 R_JUP = 69911           # Jupiter radius [km]
 M_JUP = 1.89e27         # Juputer mass [kg]
+AU = 149597870700       # AU in [m]
 
 """ PARAMETERS """
 # Host Star: 51 Pegasi
@@ -23,7 +24,8 @@ P = 4.230785            # Orbital period [days]
 K = 55.94               # Semi-amplitude [m/s]
 
 # Observations
-N_transit = 250          # Data points per transit plot
+N_transit = 1000         # Data points per transit plot
+N_radial = 15           # Data points in Radial Velocity
 eps_a = 1e-3
 eps_b = 1e-3
 
@@ -34,7 +36,8 @@ if __name__ == "__main__":
     F_transit = 1 - RpRs**2
 
     # Transit duration
-    theta = 45. / 360 #FIXME
+    theta = R_SUN * 1e3 / (a * AU) / np.pi
+    # theta = 45. / 360 #FIXME
     t_transit = theta * P
 
     # Ideal Fluxes transit
@@ -50,14 +53,34 @@ if __name__ == "__main__":
     noisy_flux = raw_flux * np.random.uniform(low=(1-eps_a), high=(1+eps_a), size=N_transit)
     noisy_flux += np.random.uniform(low=(-eps_b), high=(eps_a), size=N_transit)
 
+    tt = np.linspace(0., 3*P, 3*N_transit)
+    ff = np.concatenate([noisy_flux, noisy_flux, noisy_flux])
+
     plt.figure()
     plt.scatter(times, noisy_flux, s=3)
     plt.ylabel('Flux ratio')
     plt.xlabel('Days')
 
-    # Save data
+    plt.figure()
+    plt.scatter(tt, ff, s=3)
+    plt.ylabel('Flux ratio')
+    plt.xlabel('Days')
+
+    # Save Transit data
     data = np.concatenate((times[:, np.newaxis], noisy_flux[:, np.newaxis]), axis=-1)
     np.savetxt('transit.txt', data)
+
+    # RV measurements
+    times_rv = 2*np.pi * np.linspace(0, P, 100)
+    rv = K * np.sin(times_rv)
+
+    rv_rand = np.random.choice(100, size=N_radial)
+
+    plt.figure()
+    plt.plot(times_rv, rv, linestyle='--')
+    plt.errorbar(times_rv[rv_rand], rv[rv_rand],
+                 yerr=5, xerr=1, fmt='o', ecolor='black')
+    plt.ylabel('RV')
 
     plt.show()
 
