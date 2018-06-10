@@ -8,8 +8,36 @@ R_EARTH = 6371000             # Earth's radius [m]
 OMEGA_EARTH = 7.2921159e-5    # Earth's angular speed [rad/s]
 N_points = 200
 
+def solve_kepler(M, e):
+    """
+    Solve Kepler's equation in terms of the Eccentric Anomaly E
+            M = E - e sin(E)
+    It uses Newton's method
+    -----
+    Returns
+    True Anomaly (Theta)
+    Based on the equation
+    tan(theta/2) = np.sqrt(1+e)/np.sqrt(1-e) * tan(E/2)
+    """
+    E0 = M
+    err = 1.
+    k = 0
+
+    while np.linalg.norm(err) > 1e-6:
+        E0 = E0 - (M - E0 + e*np.sin(E0))/(-1. + e*np.cos(E0))
+        k += 1
+        err = M - E0 + e*np.sin(E0)
+        print(k)
+
+    a = np.tan(E0/2)
+    b = np.sqrt(1 - e) / np.sqrt(1 + e)
+    theta = 2 * np.arctan2(a, b)
+    return theta
+
 def orbital_elements(h, e, i, raan, omega):
-    # Define the Orbital Elements
+    """
+    Construct the orbital elements
+    """
     a = h * 1000 + R_EARTH
     ecc = e
     inc = np.deg2rad(i)
@@ -50,14 +78,15 @@ def compute_track(elements, theta, periods=1, rotation=False):
 theta = np.linspace(0, 2*np.pi, N_points)
 
 """ Effect of Earth's rotation """
-orbit_1 = orbital_elements(h=600, e=0.0, i=45, raan=0, omega=0)
-lon1, lat1 = compute_track(orbit_1, theta)
-lon2, lat2 = compute_track(orbit_1, theta, rotation=True)
+orbit_1 = orbital_elements(h=(26600e3-R_EARTH)/1e3, e=0.0, i=62.8, raan=0, omega=270)
+lon1, lat1 = compute_track(orbit_1, theta, rotation=True)
+# lon2, lat2 = compute_track(orbit_1, theta, rotation=True)
+lon2, lat2 = compute_track(orbit_1, theta_new, rotation=True)
 
 fig = plt.figure()
 ax = fig.add_subplot(1, 1, 1,
                      projection=ccrs.PlateCarree())
-ax.scatter(lon1, lat1, color='black', s=5, label="No rotation")
+# ax.scatter(lon1, lat1, color='black', s=5, label="No rotation")
 ax.scatter(lon2, lat2, color='red', s=5, label="Earth's Rotation")
 plt.legend()
 ax.stock_img()
