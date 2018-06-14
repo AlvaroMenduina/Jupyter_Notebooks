@@ -395,16 +395,16 @@ if __name__ == "__main__":
     # Parameters
     N, M = 20, 20       # Map dimensions
     max_iter = 500      # Number of iterations
-    grass_options = {'initial_grass_level':10, 'growth_rate':1}
+    grass_options = {'initial_grass_level':8, 'growth_rate':1}
     rabbit_options = {'n_rabbits':100, 'max_food_cap':45, 'eating_rate':5,
                       'hunger':1,
-                      'reproductive_age':10, 'reproductive_success':0.75,
-                      'min_food_to_repr':5, 'max_age':30,
+                      'reproductive_age':15, 'reproductive_success':0.5,
+                      'min_food_to_repr':5, 'max_age':25,
                       'nutritional_value':10, 'seed':None}
 
-    wolf_options = {'n_wolves':5, 'max_food_cap':200, 'hunger':3,
+    wolf_options = {'n_wolves':3, 'max_food_cap':200, 'hunger':3,
                       'reproductive_age':15, 'reproductive_success':0.5,
-                      'min_food_to_repr':25, 'max_age':30, 'seed':None}
+                      'min_food_to_repr':25, 'max_age':35, 'seed':None}
 
     sim = Simulation(N, M, grass_options, rabbit_options, wolf_options, max_iter)
     sim.simulate()
