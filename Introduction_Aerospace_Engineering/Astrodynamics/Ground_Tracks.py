@@ -101,7 +101,7 @@ if __name__ == "__main__":
     #                               Influence of Earth's rotation                        #
     # ================================================================================== #
 
-    leo = orbital_elements(h=600, e=0.0, i=45, raan=0, omega=0)
+    leo = orbital_elements(h=2500, e=0.0, i=45, raan=0, omega=0)
     lon_no_rot, lat_no_rot = compute_track(leo, periods=1, rotation=False)
     lon_rot, lat_rot = compute_track(leo, periods=1, rotation=True)
 
@@ -184,12 +184,12 @@ if __name__ == "__main__":
     a_synch = (MU_EARTH * (T_earth/2/np.pi)**2)**(1/3)
     h_synch = (a_synch - R_EARTH)/1e3
 
-    e_g1, i_g1, omega_g1 = 0.0, 60, 0
+    e_g1, i_g1, omega_g1 = 0.2, 45, 0
     label_g1 = 'e=%.1f, i=%.1f, omega=%.1f' %(e_g1, i_g1, omega_g1)
     geo_synch_1 = orbital_elements(h=h_synch, e=e_g1, i=i_g1, raan=0, omega=omega_g1)
     lon_synch_1, lat_synch_1 = compute_track(geo_synch_1, periods=1, rotation=True)
 
-    e_g2, i_g2, omega_g2 = 0.4, 30, 0
+    e_g2, i_g2, omega_g2 = 0.2, 45, 45
     label_g2 = 'e=%.1f, i=%.1f, omega=%.1f' %(e_g2, i_g2, omega_g2)
     geo_synch_2 = orbital_elements(h=h_synch, e=e_g2, i=i_g2, raan=0, omega=omega_g2)
     lon_synch_2, lat_synch_2 = compute_track(geo_synch_2, periods=1, rotation=True)
@@ -208,7 +208,7 @@ if __name__ == "__main__":
     #                                    Molniya Orbit                                   #
     # ================================================================================== #
 
-    h_mol, e_mol, i_mol, raan_mol, omega_mol = (26600e3-R_EARTH)/1e3, 0.74, 62.8, 75, 270
+    h_mol, e_mol, i_mol, raan_mol, omega_mol = (26600e3-R_EARTH)/1e3, 0.74, 62.8, 75, 45
     mol_label = "h=%.1f [km], e=%.1f, i=%.1f [deg], RAAN=%.1f [deg], omega=%.1f [deg]" %(h_mol, e_mol, i_mol, raan_mol, omega_mol)
     molniya = orbital_elements(h=h_mol, e=e_mol, i=i_mol, raan=raan_mol, omega=omega_mol)
     lon_mol, lat_mol = compute_track(molniya, periods=2, rotation=True)
