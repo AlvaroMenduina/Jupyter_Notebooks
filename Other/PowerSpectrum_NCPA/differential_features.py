@@ -124,8 +124,6 @@ if __name__ == "__main__":
         F_k = fftshift(fft2(1j*H[:,:,k], norm='ortho'))
         F_k_conj = np.conj(F_k)
         F_ZZ = F_k * F_k_conj
-
-        print(np.max(np.imag(F_ZZ)))
         F_ZZ0 = np.real(F_ZZ)
 
         airy = Circle((pix_scale/2,-pix_scale/2),1.22,
@@ -154,9 +152,6 @@ if __name__ == "__main__":
         a = F_k * F_j_conj
         b = F_j * F_k_conj
         F_jk = a + b
-        res = np.imag(a)
-        print(np.sum(res**2))
-        # print(np.max(np.imag(F_jk)))
         F_jk0 = np.real(F_jk)
         m = F_jk0.max()
 
@@ -296,7 +291,6 @@ if __name__ == "__main__":
         # plt.savefig('F%d' % (j))
 
 
-
     # Cross Terms (only when at least 2 aberrations)
     j = 1
     for k in np.arange(1, 15):
@@ -329,7 +323,6 @@ if __name__ == "__main__":
         plt.ylabel(r'$[\lambda/D]$')
         if np.max(F) < 1e-4:
             im.set_clim(-2.5, 2.5)
-        # plt.clim(F_phi.min(), -F_phi.min()/4)
 
         plt.title('%d %d' %(j,k))
         plt.savefig('%d %d' %(j,k))
@@ -426,41 +419,6 @@ if __name__ == "__main__":
 
     # ------------------------------------------------------------------------------------------------------------------
 
-    """ Bessel integrals """
-
-    def bessel_int(chi, n, k):
-        J1 = bessel(n + 1, 2 * np.pi * chi) / chi
-        J2 = bessel(n + 1, 2 * np.pi * (k - chi)) / (k - chi)
-        return J1 * J2
-
-    from scipy.integrate import trapz
-
-    chi = np.linspace(0.00001, 1000., 10000)
-    y = bessel_int(chi, n=1, k=0)
-    integral2 = trapz(y, chi)
-
-    def convolution_bessel(n):
-        eps = 0.0001
-        b_max = 100
-        chi = np.linspace(eps, b_max, 10000)
-        N = 100
-        k = np.linspace(eps, 2.5, N)
-        integral = np.zeros(N)
-        for i in range(N):
-            values = bessel_int(chi, n, k[i])
-            integral[i] = trapz(values, chi)
-        return k, integral
-
-
-    plt.figure()
-    for n in np.arange(1, 5):
-        k, result = convolution_bessel(n)
-        plt.plot(k, result, label=n)
-
-    plt.xlim([0, 2.5])
-    plt.legend(title=r'Zernike order $n$')
-    plt.xlabel(r'Spatial frequency $k$')
-    plt.show()
 
 
 
