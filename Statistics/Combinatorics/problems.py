@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 
 if __name__ == "__main__":
 
@@ -134,5 +135,123 @@ if __name__ == "__main__":
 
     prob_seats = counts / N_trials
     print('\nProbability: %.3f | True (1/3): %.3f' %(prob_seats, 1/3.))
+
+    # ================================================================================================================ #
+
+    """
+    (6)
+    6 people sit in a circle. What's the probability of two friends sitting next to each other
+    """
+    # Total: 6!
+    # 6 rotations of the pair, times 4! choices for the remaining friends, times 2 for the permutation
+    # Prob: 2 * 6 * 4! / 6! = 2/ 5
+
+    seats = [0, 1, 2, 3, 4, 5]
+    counts = 0
+    for k in range(N_trials):
+        new_seats, i, j = arrange_seats(seats)
+        if np.abs(j - i) == 1 or np.abs(j - i) == 5:
+            counts += 1
+
+    prob_seats = counts / N_trials
+    print('\nProbability: %.3f | True (2/5): %.3f' %(prob_seats, 2/5.))
+
+    # ================================================================================================================ #
+    """
+    (7)
+    We throw a dice 3 times. Probability of only getting a 2 once
+    """
+    # Total: 6^3
+    # If the first roll is a two, the remaining 2 rolls can only be drawn from [1, -, 3, 4, 5, 6] so 5^2
+    # as that can happen for any of the rolls, we multiply by rolls
+    # Prob: 3 * 5^2 / 6^3
+
+    def roll_dice_n_times(n):
+        choices = np.array([1, 2, 3, 4, 5, 6])
+        rolls = []
+        for k in range(n):
+            i = np.random.choice(range(6), 1, replace=False)[0]
+            rolls.append(choices[i])
+        return rolls
+
+    n = 3
+    counts = 0
+    for k in range(N_trials):
+        rolls = roll_dice_n_times(n)
+        two = rolls.count(2)
+        if two == 1:
+            counts += 1
+
+    prob_rolls = counts / N_trials
+    prob_true = n /6 * (5/6)**(n-1)
+    print('\nProbability: %.3f | True: %.3f' % (prob_rolls, prob_true))
+
+    def count_ocurrence(n_rolls, N_trials, c=2):
+        counts = 0
+        for k in range(N_trials):
+            rolls = roll_dice_n_times(n_rolls)
+            two = rolls.count(2)
+            if two == c:
+                counts += 1
+
+        prob_rolls = counts / N_trials
+        return prob_rolls
+
+    n_rolls = np.arange(1, 30)
+    p_true = []
+    p = []
+    for n_r in n_rolls:
+        print(n_r)
+        p.append(count_ocurrence(n_r, N_trials=5000))
+        p_true.append(n_r/6 * (5/6)**(n_r - 1))
+
+    plt.figure()
+    plt.scatter(n_rolls, p)
+    plt.plot(n_rolls, p_true, color='black', linestyle='--')
+    plt.xlabel('Number of rolls')
+    plt.ylabel('Probability of getting a number ONLY ONCE')
+    plt.show()
+
+    # So the peak occurs at approximately 5-6 rolls
+
+    # ================================================================================================================ #
+
+    """
+    You roll a dice N times. What's the probability of getting the same number only R times?
+    """
+    # Total: 6^N
+    # If you force a number to happen R times, the remaining choices are 5^(N - r)
+    # times the number of ways you can rearrange the positions.
+    # i.e. permutations with repetition n! / (r! (n-r)!) which is the same as a standard
+    # combination of r elements out of n
+
+    # Prob: 5^(n-r) / 6^n C(n, r)
+
+    from scipy.special import comb
+    n_rolls = np.arange(1, 30)
+    n_counts = [1, 2, 3]
+    p_true = []
+    p = []
+    plt.figure()
+    for c in n_counts:
+        print(c)
+        pp = []
+        pp_true = []
+        for n in n_rolls:
+            pp.append(count_ocurrence(n, N_trials=500, c=c))
+            pp_true.append(5**(-c) * (5/6)**n * comb(n,c))
+        p.append(pp)
+        p_true.append(pp_true)
+
+        plt.scatter(n_rolls, pp)
+        plt.plot(n_rolls, pp_true, color='black', linestyle='--', label=c)
+    plt.legend(title=r'Number of repetitions $R$')
+    plt.xlabel('Number of rolls')
+    plt.ylabel('Probability of getting a number R times')
+    plt.show()
+
+
+
+
 
 
