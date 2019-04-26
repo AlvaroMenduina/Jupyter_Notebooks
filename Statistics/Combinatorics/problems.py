@@ -238,17 +238,70 @@ if __name__ == "__main__":
         pp = []
         pp_true = []
         for n in n_rolls:
-            pp.append(count_ocurrence(n, N_trials=500, c=c))
+            pp.append(count_ocurrence(n, N_trials=1000, c=c))
             pp_true.append(5**(-c) * (5/6)**n * comb(n,c))
         p.append(pp)
         p_true.append(pp_true)
 
-        plt.scatter(n_rolls, pp)
-        plt.plot(n_rolls, pp_true, color='black', linestyle='--', label=c)
+        plt.scatter(n_rolls, pp, label=c)
+        plt.plot(n_rolls, pp_true, color='black', linestyle='--')
     plt.legend(title=r'Number of repetitions $R$')
     plt.xlabel('Number of rolls')
     plt.ylabel('Probability of getting a number R times')
     plt.show()
+
+    # ================================================================================================================ #
+    """
+    (12)
+    Spanish card deck (40 cards), you draw 5 cards.
+        (a) Probability of getting the As de Oros
+    """
+
+    def draw_cards(n_cards, n_deck=40):
+        cards = [c for c in range(n_deck)]
+        aces = [0, 1, 2, 3]
+
+        choice = np.random.choice(cards, size=n_cards, replace=False)
+
+        # Is the As de Oros in the chosen cards?
+        count_a = 1 if 0 in choice else 0
+
+        s = 0
+        for ace in aces:
+            if ace in choice:
+                s += 1
+
+        # Is there only 1 Ace in the chosen cards?
+        count_b = 1 if s == 1 else 0
+
+        # Is there no Aces in the chosen cards?
+        count_c = 1 if s == 0 else 0
+
+        # Is there at least 1 Ace in the chosen cards?
+        count_d = 1 if s >= 1 else 0
+
+        return count_a, count_b, count_c, count_d
+
+    pa, pb, pc, pd = np.zeros(4)
+    for k in range(N_trials):
+        count_a, count_b, count_c, count_d = draw_cards(5)
+        pa += count_a
+        pb += count_b
+        pc += count_c
+        pd += count_d
+
+    pa /= N_trials
+    pb /= N_trials
+    pc /= N_trials
+    pd /= N_trials
+
+    print('\nProb of As de Oros: %.3f | True (1/8): %.3f' %(pa, 1/8.))
+    print('\nProb of only 1 Ace: %.3f | True : %.3f' %(pb, 0.358))
+    print('\nProb of no Aces: %.3f | True : %.3f' % (pc, 0.573))
+    print('\nProb of at least 1 Ace: %.3f | True : %.3f' % (pd, 0.427))
+
+
+
 
 
 
