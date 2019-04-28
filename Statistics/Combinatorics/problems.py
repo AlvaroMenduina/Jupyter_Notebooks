@@ -300,6 +300,74 @@ if __name__ == "__main__":
     print('\nProb of no Aces: %.3f | True : %.3f' % (pc, 0.573))
     print('\nProb of at least 1 Ace: %.3f | True : %.3f' % (pd, 0.427))
 
+    # ================================================================================================================ #
+
+    def ball_boxes(n_balls, n_boxes):
+        boxes = [n for n in range(n_boxes)]
+        final = np.zeros(n_boxes)
+
+        for i in range(n_balls):
+            box = np.random.choice(boxes, size=1, replace=False)
+            final[box] += 1
+
+        total = np.sum(final)
+        assert total == n_balls
+        return final
+
+    def check_boxes(boxes, boxes_with=1, value=1):
+        # Check how many boxes with a certain value
+        counts = 0
+        for box in boxes:
+            if box == value:
+                counts += 1
+        if counts == boxes_with:
+            return 1
+        else:
+            return 0
+
+    def theory(n_balls, n_boxes, p, value):
+        """
+        Probability of having [Value] balls in [p] boxes
+        after putting n_balls in n_boxes at random
+        """
+        total = comb(n_boxes + n_balls - 1, n_balls)
+        ways_to_chose_p_boxes = comb(n_boxes, p)
+
+        n_boxes_new = n_boxes - p
+        r_balls_new = n_balls - p*value
+        ways_to_arrange_remaining = comb(n_boxes_new + r_balls_new - 1, r_balls_new)
+        ways_to_arrange_remaining -= n_boxes_new * comb(n_boxes_new-1 + r_balls_new-value - 1, r_balls_new-value)
+
+        ways_to_arrange_remaining = n_boxes_new * (r_balls_new -1)
+        ways = ways_to_chose_p_boxes * ways_to_arrange_remaining
+        prob = ways / total
+        print(total)
+        print(ways_to_arrange_remaining)
+        return prob
+
+    N_boxes = 10
+    N_balls = 20
+    N_trials = 100
+
+    r = np.arange(1, N_boxes)
+    v = 1
+    prob = []
+    for boxes_with in r:
+        counts = 0
+        for i in range(N_trials):
+            counts += check_boxes(ball_boxes(N_balls, N_boxes), boxes_with, value=v)
+
+        prob.append(counts / N_trials)
+
+    plt.figure()
+    plt.scatter(r, prob, s=4, label=v)
+    plt.plot(r, theory(N_balls, N_boxes, r, v))
+    plt.xlabel(r'Boxes with $n$ Ball(s)')
+    plt.legend(title='$n$')
+    plt.show()
+
+
+
 
 
 
