@@ -3,8 +3,6 @@
 
 Things that I don't normally use, related to STRINGS
 
-
-
 """
 import numpy as np
 
