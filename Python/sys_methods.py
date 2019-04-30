@@ -1,7 +1,6 @@
 import sys
 import numpy as np
 import os
-import argparse
 
 """
 Pass the name of a txt file and N: how many of the numbers in the file to add together
