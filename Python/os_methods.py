@@ -71,6 +71,31 @@ if __name__ == '__main__':
         if f.endswith('.txt'):
             print('This is a text file')
 
+    # ==========================================================================================
+    ### Walking a director tree
+    # Move to the Main Directory (Jupyter Notebooks)
+    os.chdir(base)
+    for dir_name, folders, files in os.walk(os.getcwd()):
+        print('The current directory is ' + dir_name)
+
+        print('\n==============================================')
+        for folder in folders:
+            print('Folder: ' +  folder)
+
+        for file in files:
+            print('File: ' + file)
+
+    walk_dir = list(os.walk(os.getcwd()))
+    print('\nWalking the Directory :' + os.getcwd())
+    print('Length of Walk: ', len(walk_dir))
+    print('First layer Walk[0] :', walk_dir[0])
+    print('\nWalk[0][0]: Directory Name -->', walk_dir[0][0])
+    print('Walk[0][1]: List of Folders -->', walk_dir[0][1])
+    print('Walk[0][2]: Files in Directory -->', walk_dir[0][2])
+
+
+
+
 
 
 
