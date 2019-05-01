@@ -1,4 +1,5 @@
 import os
+import shutil
 
 if __name__ == '__main__':
 
@@ -29,11 +30,50 @@ if __name__ == '__main__':
         print('Creating Directory: ', new_path)
         os.mkdir(new_path)
 
-    new_name = os.path.join(base, 'New Dogs')
-    # Change the name of a existing Directory
-    os.rename(new_path, new_name)
 
-    # os.rename(new_name, new_path)
+    # Change the name of a existing Directory
+    #os.rename(new_path, new_name)
+
+    # ==========================================================================================
+    ### Creating files
+
+    with open('dogs.txt', 'w') as file:
+        names = ['Max', 'Cooper', 'Pepper', 'Bentley', 'Hunter']
+        for n in names:
+            file.write(n)
+            file.write('\n')
+        file.close()
+
+    ### Moving and Renaming files
+
+    # Make a new directory New Dogs
+    new_name = os.path.join(base, 'New Dogs')
+    try:
+        os.mkdir(new_name)
+    except FileExistsError:
+        pass
+
+    # Move the file dogs.txt from \Dogs to \New Dogs
+    new_cwd = os.getcwd()
+    old_file = os.path.join(new_cwd, 'dogs.txt')
+    new_file = os.path.join(new_name, 'dogs_moved.txt')
+    shutil.move(old_file, new_file)
+
+    # Move back to the original Directory where os_methods.py is
+    os.chdir(cwd)
+
+    # ==========================================================================================
+    ### Listing the files in the Directory
+    file_list = os.listdir()
+    print('\nListing the files in Directory: ', cwd)
+    for f in file_list:
+        print(f)
+        if f.endswith('.txt'):
+            print('This is a text file')
+
+
+
+
 
 
 
