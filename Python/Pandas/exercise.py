@@ -33,6 +33,10 @@ if __name__ == "__main__":
     for number, sex in zip(n_sexes, sexes):
         print("%s : %.d" %(sex, number))
 
+    # another way of doing it
+    print("\nAnother way: df['sex'].value_counts()")
+    print(abalone['sex'].value_counts())
+
     # (3) Group by sex
     sex_grouped = abalone.groupby('sex')
     print("\nGrouping them by sex")
@@ -174,5 +178,17 @@ if __name__ == "__main__":
 
     ### Aggregate the elements of each quartile
     df_agg = grouped['height', 'weight'].agg(['mean', 'median'])
+
+    ### Getting rid of a column
+    # drop(columns=name, inplace=True) is the same as del df[name]
+    df_q1_clean = df_q1.drop(columns='ring_quartile')
+
+    # -------------------------------------------------------------------------------------- #
+    ### Group by Number of Rings, get the Length, sum across it.
+    group_rings = abalone.groupby('rings')
+    len_grouped = group_rings['length']
+    sum_len = len_grouped.apply(sum).sort_values()
+    print(sum_len)
+
 
 
