@@ -15,6 +15,9 @@ if __name__ == '__main__':
     path = os.path.split(cwd)
     base = path[0]
 
+    # The longest path prefix common to all paths in a list
+    prefix = os.path.commonprefix([cwd, base])
+
     # check if path with an incorrect name exists
     incorrect_path = os.path.join(base, 'Pythonn')
     print('\nDoes ' + incorrect_path + ' exist?')
@@ -29,7 +32,6 @@ if __name__ == '__main__':
         print('\nDirectory does not exist')
         print('Creating Directory: ', new_path)
         os.mkdir(new_path)
-
 
     # Change the name of a existing Directory
     #os.rename(new_path, new_name)
