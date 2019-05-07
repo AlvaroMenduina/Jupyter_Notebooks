@@ -102,11 +102,12 @@ def list_powers(N):
                 if _power not in flat_terms:
                     flat_terms.append(_power)
 
-            if a in not_primes:     # Check if a = (prime_fact) ** p
+            elif a in not_primes:     # Check if a = (prime_fact) ** p
                 prime_fact = factors(a, primes)
                 f_unique = np.unique(prime_fact)
 
                 if f_unique.shape[0] != 1:     # Not prime but (p1 * p2) ** b
+                    # pass
                     _power = [a for a in prime_fact]
                     _power.append(b)
                     # print(_power)
@@ -123,13 +124,24 @@ def list_powers(N):
         terms.append(a_list)
     return terms, flat_terms
 
+def unique_flats(flat_terms):
+
+    unique = []
+    while len(flat_terms) > 1:
+        current = flat_terms.pop(0)
+        unique.append(current)
+        try:
+            flat_terms.remove(current)
+        except ValueError:
+            pass
+    return unique
 
 
 
 if __name__ == "__main__":
 
     # Brute Force example
-    a = list(np.arange(2, 18+1))
+    a = list(np.arange(2, 17+1))
     res = powers(a, a.copy())
     n_unique = len(res)
     print("\nDistinct terms in the sequence for 2 <= a<= 5, 2 <= b <= 5")
@@ -137,8 +149,12 @@ if __name__ == "__main__":
     print("Number of terms: ", n_unique)
 
     ### Smarter approach
-    N = 100
+    N = 17
+
     terms, flat_terms = list_powers(N)
     solution = len(flat_terms)
     print("\nSmarter approach: ", solution)
+
+    # flat = [item for sublist in terms for item in sublist]
+    # f = unique_flats(flat.copy())
 
