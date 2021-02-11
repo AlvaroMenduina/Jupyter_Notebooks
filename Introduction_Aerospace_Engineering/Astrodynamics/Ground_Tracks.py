@@ -115,6 +115,7 @@ if __name__ == "__main__":
     ax.gridlines()
     ax.coastlines()
     plt.title("Effect of Earth's rotation on the Ground Track")
+    plt.show()
 
     # ================================================================================== #
     #                                  Several orbital periods                           #
